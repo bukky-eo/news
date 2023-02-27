@@ -1,19 +1,22 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
+import 'news_model.dart';
+// import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class Api {
+class ApiService {
   final Uri url;
-  Api({required this.url});
+  ApiService({required this.url});
 
-  Future getData() async {
+  Future<List<NewsDescription>> getData() async {
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
-      var data = response.body;
-      return jsonDecode(data);
+      Map<String, dynamic> json = jsonDecode(response.body);
+      List<dynamic> body = json['articles'];
+      List<NewsDescription> articles =
+          body.map((dynamic item) => NewsDescription.fromJson(item)).toList();
+      return articles;
     } else {
-      print(response.statusCode);
+      throw ("Can't get the Article ");
     }
   }
 }
