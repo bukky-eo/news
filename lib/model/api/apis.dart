@@ -1,22 +1,33 @@
 import 'dart:convert';
 import 'news_model.dart';
-// import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ApiService {
+class NetworkHelper {
   final Uri url;
-  ApiService({required this.url});
+  NetworkHelper(this.url);
 
-  Future<List<NewsDescription>> getData() async {
+  Future getData() async {
     http.Response response = await http.get(url);
     if (response.statusCode == 200) {
-      Map<String, dynamic> json = jsonDecode(response.body);
-      List<dynamic> body = json['articles'];
-      List<NewsDescription> articles =
-          body.map((dynamic item) => NewsDescription.fromJson(item)).toList();
-      return articles;
+      String data = response.body;
+      return jsonDecode(data);
     } else {
-      throw ("Can't get the Article ");
+      print(response.statusCode);
+      throw Exception('Failed to get weather data');
     }
   }
 }
+
+// Future<List<Article>> fetchArticles() async {
+//   final response = await http.get(Uri.parse(
+//       'https://newsapi.org/v2/top-headlines?country=us&apiKey=YOUR_API_KEY'));
+//
+//   if (response.statusCode == 200) {
+//     final json = jsonDecode(response.body);
+//     return (json['articles'] as List)
+//         .map((articleJson) => Article.fromJson(articleJson))
+//         .toList();
+//   } else {
+//     throw Exception('Failed to load articles');
+//   }
+// }
