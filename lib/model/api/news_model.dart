@@ -57,14 +57,14 @@ class Article {
       required this.content});
 
   Article.fromJson(Map<String, dynamic> json)
-      : author = json[''],
+      : author = json['author'] ?? "Unknown Author",
         source = json["source"] == null
             ? Source.fromJson({})
             : Source.fromJson(json["source"]),
-        title = json['title'],
-        description = json['description'],
-        url = json['url'],
-        urlToImage = json['urlToImage'],
-        publishedAt = json['publishedAt'],
-        content = json['content'];
+        title = json['title'] ?? "My News",
+        description = json['description'] ?? "",
+        url = json['url'] ?? "",
+        urlToImage = json['urlToImage'] ?? "",
+        publishedAt = json['publishedAt'] ?? "",
+        content = json['content'] ?? "";
 }

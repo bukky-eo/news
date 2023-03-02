@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:news/helpers/constants.dart';
 import 'package:news/helpers/widgets.dart';
 
@@ -34,6 +35,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    // String formattedDate = DateFormat.yMMMMd();
+
     return Scaffold(
       backgroundColor: kBackground,
       body: SafeArea(
@@ -162,7 +165,7 @@ class _HomePageState extends State<HomePage>
                 child: TabBarView(controller: _tabController, children: [
               Container(
                 color: Colors.transparent,
-                child: Text(
+                child: const Text(
                   "Hi I'm here",
                   style: TextStyle(color: Colors.black),
                 ),
@@ -195,6 +198,7 @@ class _HomePageState extends State<HomePage>
                       )
                     ],
                   ),
+                  const SizedBox(height: 15),
                   FutureBuilder(
                     future: networkHelper.getData(),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -205,22 +209,71 @@ class _HomePageState extends State<HomePage>
                         for (var article in newsData['articles']) {
                           articles.add(Article.fromJson(article));
                         }
-                        return ListView.builder(
-                          itemCount: articles.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final article = articles[index];
-                            return ListTile(
-                              leading: Image.network(article.urlToImage),
-                              title: Text(article.title),
-                              subtitle: Text(article.description),
-                              onTap: () {
-                                // Do something when the user taps on the article
-                              },
-                            );
-                          },
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: articles.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final article = articles[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  print('this was clicked');
+                                },
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                article.author,
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontFamily: 'Gilroy',
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                              const SizedBox(width: 15),
+                                              Text(
+                                                DateFormat.yMMMd().format(
+                                                    DateTime.parse(
+                                                        article.publishedAt)),
+                                                style: const TextStyle(
+                                                    fontSize: 14.0),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            article.title,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontFamily: 'Gilroy',
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Divider(
+                                            height: 10,
+                                            thickness: 2,
+                                            color: Colors.grey[300],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
